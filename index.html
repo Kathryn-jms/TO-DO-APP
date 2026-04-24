@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Start Your Day</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(135deg,pink, #f5e1f7 50%, #3b82f6 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color:#3b82f6;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 45px;
+      border-radius: 18px;
+      max-width: 460px;
+      text-align: center;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.25);
+    }
+    h1 { font-size: 30px; margin-bottom: 18px; }
+    p { font-size: 16px; line-height: 1.7; opacity: 0.95; }
+    button {
+      margin-top: 30px;
+      padding: 14px 30px;
+      font-size: 16px;
+      border: none;
+      border-radius: 30px;
+      background: white;
+      color: #1d2671;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s ease;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Hello!  Welcome to TaskBlossom</h1>
+    <p>Today is a fresh start not because everything is perfect, but because you chose to begin.</p>
+    <p>One task at a time. One step forward. Progress lives in consistency, not pressure.</p>
+    <p>Write it down. Focus your energy. Let today count.</p>
+
+    <button id="startBtn">Start My Day →</button>
+  </div>
+
+  <script>
+    
+
+
+
+
+    // When clicked, mark as visited and go to main page
+    startBtn.addEventListener('click', () => {
+      localStorage.setItem('visited', 'true'); // store that user has visited
+      window.location.href = 'welcome.html';     // navigate to To-Do page
+    });
+
+    // Optional: redirect immediately if already visited
+    if(localStorage.getItem('visited') === 'true') {
+      window.location.href = 'welcome.html';
+    }
+  </script>
+
+</body>
+</html>

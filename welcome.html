@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My To-Do App</title>
+  <style>
+    /* ===== BASE ===== */
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(145deg, pink, #f5e1f7 50%, #fce8f5 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* ===== CONTAINER ===== */
+    .container {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: 28px;
+      padding: 32px 26px;
+      width: 100%;
+      max-width: 460px;
+      box-shadow: 0 22px 48px rgba(0, 0, 0, 0.09),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    /* ===== TOP BAR ===== */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .date-style-1 {
+      background: #3b82f6;
+      color: white;
+      padding: 7px 16px;
+      border-radius: 14px;
+      font-size: 13.5px;
+      font-weight: 500;
+    }
+
+    .time-style {
+      background: #60a5fa;
+      color: white;
+      padding: 7px 16px;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    /* ===== INPUT AREA ===== */
+    .task-input {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .task-input input,
+    #startTime, #endTime {
+      flex: 1;
+      padding: 13px 18px;
+      border: 1px solid #bfdbfe;
+      border-radius: 14px;
+      font-size: 15px;
+      background: white;
+      transition: all 0.2s;
+    }
+
+    .task-input input:focus,
+    #startTime:focus, #endTime:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+    }
+
+    button {
+      padding: 13px 20px;
+      border: none;
+      border-radius: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    #addBtn {
+      background: #60a5fa;
+      color: white;
+    }
+
+    #addBtn:hover {
+      background: #3b82f6;
+      transform: translateY(-1.5px);
+    }
+
+    #toggleTimeBtn {
+      background: #f9a8d4;
+      color: #1e293b;
+    }
+
+    #toggleTimeBtn:hover {
+      background: #f472b6;
+      transform: translateY(-1.5px);
+    }
+
+    #timeInputs {
+      display: flex;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    /* ===== TASK LIST ===== */
+    ul { list-style:none; padding:0; }
+
+    li {
+      background: white;
+      margin-top: 12px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border: 1px solid #e0f2fe;
+      transition: all 0.2s ease;
+    }
+
+    li:hover {
+      border-color: #bfdbfe;
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.08);
+      transform: translateY(-1px);
+    }
+
+    li span {
+      flex:1;
+      cursor: pointer;
+      user-select: none;
+      font-size: 15.5px;
+      color: #1e293b;
+      line-height:1.45;
+    }
+
+    li .completed { color:#94a3b8; text-decoration:line-through; }
+
+    li small { color:#64748b; font-size:12.5px; display:block; margin-top:4px; opacity:0.95; }
+
+    .edit { background: #93c5fd; color:#1e40af; padding: 9px 16px; font-size:13.5px; }
+    .edit:hover { background:#60a5fa; color:white; }
+
+    .delete { background: #f9a8d4; color:#831843; padding:9px 16px; font-size:13.5px; }
+    .delete:hover { background:#f472b6; color:white; }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <div id="dateDisplay" class="date-style-1"></div>
+      <div id="timeDisplay" class="time-style"></div>
+    </div>
+
+    <div class="task-input">
+      <input type="text" id="taskInput" placeholder="Enter a task">
+      <button id="addBtn">Add</button>
+      <button id="toggleTimeBtn">⏱ Time</button>
+    </div>
+
+    <div id="timeInputs">
+      <input type="time" id="startTime">
+      <input type="time" id="endTime">
+    </div>
+
+    <button id="startBtn">back</button>
+
+    <ul id="taskList"></ul>
+
+
+  </div>
+
+
+  <script>
+    // ===== ELEMENTS =====
+    const taskInput      = document.getElementById("taskInput");
+    const addBtn         = document.getElementById("addBtn");
+    const taskList       = document.getElementById("taskList");
+    const startTimeInput = document.getElementById("startTime");
+    const endTimeInput   = document.getElementById("endTime");
+    const toggleTimeBtn  = document.getElementById("toggleTimeBtn");
+    const timeInputs     = document.getElementById("timeInputs");
+
+    // ===== TOGGLE TIME INPUTS =====
+    toggleTimeBtn.addEventListener("click", () => {
+      if (timeInputs.style.display === "none" || timeInputs.style.display === "") {
+        timeInputs.style.display = "flex";
+      } else {
+        timeInputs.style.display = "none";
+        startTimeInput.value = "";
+        endTimeInput.value = "";
+      }
+    });
+
+    // ===== LOAD TASKS =====
+    window.addEventListener("load", () => {
+      const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      tasks.forEach(task => addTaskToDOM(task.text, task.completed, task.start, task.end));
+    });
+
+    // ===== ADD TASK TO DOM =====
+    function addTaskToDOM(text, completed=false, start="", end="") {
+      const li = document.createElement("li");
+      const span = document.createElement("span");
+      span.dataset.text = text;
+      span.dataset.start = start;
+      span.dataset.end = end;
+
+      function renderSpan() {
+        let html = span.dataset.text || "";
+        if(span.dataset.start) html += `<br><small>⏱ Start: ${span.dataset.start}</small>`;
+        if(span.dataset.end) html += `<br><small>⏱ End: ${span.dataset.end}</small>`;
+        span.innerHTML = html;
+      }
+      renderSpan();
+      if(completed) span.classList.add("completed");
+
+      span.addEventListener("click", e=>{
+        if(e.target===span || e.target.tagName==="SMALL"){
+          span.classList.toggle("completed");
+          updateLocalStorage();
+        }
+      });
+
+      const editBtn = document.createElement("button");
+      editBtn.textContent="Edit"; editBtn.className="edit";
+      editBtn.addEventListener("click", e=>{
+        e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+        let newText = window.prompt("Edit task:", span.dataset.text || "");
+        if(!newText || newText.trim()===span.dataset.text) return;
+        span.dataset.text = newText.trim(); renderSpan(); updateLocalStorage();
+      });
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.textContent="Delete"; deleteBtn.className="delete";
+      deleteBtn.addEventListener("click", e=>{ e.preventDefault(); e.stopPropagation(); li.remove(); updateLocalStorage(); });
+
+      li.append(span, editBtn, deleteBtn);
+      taskList.appendChild(li);
+    }
+
+    function updateLocalStorage() {
+      const tasks=[]; taskList.querySelectorAll("li").forEach(li=>{
+        const span = li.querySelector("span"); if(!span) return;
+        tasks.push({ text: span.dataset.text||"", completed:span.classList.contains("completed"), start:span.dataset.start||"", end:span.dataset.end||"" });
+      });
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    addBtn.addEventListener("click", ()=>{
+      const text = taskInput.value.trim(); if(!text){ alert("Please enter a task"); return; }
+      addTaskToDOM(text,false,startTimeInput.value,endTimeInput.value);
+      updateLocalStorage();
+      taskInput.value=""; startTimeInput.value=""; endTimeInput.value=""; timeInputs.style.display="none";
+    });
+
+    function showDate(){ const el=document.getElementById("dateDisplay"); if(!el) return; const today=new Date(); const opt={ weekday:"long", year:"numeric", month:"long", day:"numeric"}; el.textContent=today.toLocaleDateString("en-GB",opt); }
+    showDate();
+
+    function showTime(){ const el=document.getElementById("timeDisplay"); if(!el) return; const now=new Date(); el.textContent=now.toTimeString().slice(0,8); }
+    setInterval(showTime,1000); showTime();
+
+    function checkAlarms(){ const now=new Date(); const current=now.toTimeString().slice(0,5); document.querySelectorAll("#taskList li").forEach(li=>{ const span=li.querySelector("span"); if(!span) return; if(span.dataset.start && span.dataset.start===current){ alert(`⏰ Starting now:\n${span.dataset.text}`); } if(span.dataset.end && span.dataset.end===current && !span.classList.contains("completed")){ span.classList.add("completed"); updateLocalStorage(); alert(`✅ Completed:\n${span.dataset.text}`); } }); }
+    setInterval(checkAlarms,30000);
+
+
+    
+    const startBtn = document.getElementById('startBtn');
+
+// When button is clicked
+startBtn.addEventListener('click', () => {
+  sessionStorage.setItem('visited', 'true');
+  window.location.href = 'index.html';
+});
+
+// Only redirect if coming fresh (not using back button)
+if (sessionStorage.getItem('visited') === 'true' && !document.referrer.includes('index.html')) {
+  // do nothing → allow staying on welcome page
+}
+  </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+{
+  "name": "todo-app",
+  "version": "1.0.0",
+  "description": "A pink and blue styled To-Do app built with Electron. Reusable desktop app for task management.",
+  "author": "Catherine James",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron . --disable gpu",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^26.6.10",
+    "electron-builder": "^24.13.3",
+    "electron-packager": "^17.1.2"
+  },
+  "build": {
+    "appId": "com.catherine.todoapp",
+    "productName": "My ToDo App",
+    "directories": {
+      "buildResources": "assets"
+    },
+    "files": [
+      "**/*"
+    ],
+    "win": {
+      "icon": "assets/icon.png"
+    },
+    "linux": {
+      "icon": "assets/icon.png",
+      "category": "Productivity"
+    },
+    "mac": {
+      "icon": "assets/icon.png"
+    }
+  }
+}
